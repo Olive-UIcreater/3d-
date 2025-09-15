@@ -1,6 +1,6 @@
 # 3D Sound Sculpture - Envelope Module
 
-一個基於 Electron 和 Three.js 的桌面應用程式，專注於實現「Envelope」聲音包絡的 3D 視覺化。
+一個基於 Electron 和 Three.js 的桌面應用程式，專注於實現「Envelope」聲音的 3D 視覺化。
 
 ## 功能特色
 
