@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envelope Module</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            color: #2c3e50;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+
+        .play-button {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .play-button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .play-button.playing {
+            background: #27ae60;
+        }
+
+        .envelope-visual {
+            width: 300px;
+            height: 150px;
+            margin: 20px 0;
+            position: relative;
+            background: white;
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .envelope-shape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            clip-path: polygon(0% 100%, 0% 0%, 25% 0%, 50% 100%, 75% 0%, 100% 0%, 100% 100%);
+            transition: all 0.3s ease;
+        }
+
+        .controls {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .control-value {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .slider-container {
+            position: relative;
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ecf0f1;
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            border: 2px solid white;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-fill {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 6px;
+            background: #e74c3c;
+            border-radius: 3px;
+            transform: translateY(-50%);
+            transition: width 0.1s ease;
+            pointer-events: none;
+        }
+
+        .attack { --range: 0%; }
+        .decay { --range: 0%; }
+        .sustain { --range: 0%; }
+        .release { --range: 0%; }
+
+        .attack .slider-fill { width: var(--attack-range, 0%); }
+        .decay .slider-fill { width: var(--decay-range, 0%); }
+        .sustain .slider-fill { width: var(--sustain-range, 0%); }
+        .release .slider-fill { width: var(--release-range, 0%); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Envelope</div>
+        <button class="play-button" id="playButton">Play</button>
+    </div>
+
+    <div class="envelope-visual">
+        <div class="envelope-shape" id="envelopeShape"></div>
+    </div>
+
+    <div class="controls">
+        <div class="control-group attack">
+            <div class="control-label">
+                <span>Attack</span>
+                <span class="control-value" id="attackValue">0.5s</span>
+            </div>
+            <div class="slider-container">
+                <div class="slider-fill"></div>
+                <input type="range" class="slider" id="attackSlider" min="0" max="3" step="0.1" value="0.5">
+            </div>
+        </div>
+
+        <div class="control-group decay">
+            <div class="control-label">
+                <span>Decay</span>
+                <span class="control-value" id="decayValue">0.5s</span>
+            </div>
+            <div class="slider-container">
+                <div class="slider-fill"></div>
+                <input type="range" class="slider" id="decaySlider" min="0" max="3" step="0.1" value="0.5">
+            </div>
+        </div>
+
+        <div class="control-group sustain">
+            <div class="control-label">
+                <span>Sustain</span>
+                <span class="control-value" id="sustainValue">50%</span>
+            </div>
+            <div class="slider-container">
+                <div class="slider-fill"></div>
+                <input type="range" class="slider" id="sustainSlider" min="0" max="100" step="1" value="50">
+            </div>
+        </div>
+
+        <div class="control-group release">
+            <div class="control-label">
+                <span>Release</span>
+                <span class="control-value" id="releaseValue">1.0s</span>
+            </div>
+            <div class="slider-container">
+                <div class="slider-fill"></div>
+                <input type="range" class="slider" id="releaseSlider" min="0" max="5" step="0.1" value="1.0">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script src="envelope-script.js"></script>
+</body>
+</html>
+

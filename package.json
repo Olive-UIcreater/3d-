@@ -1,0 +1,32 @@
+{
+  "name": "3d-sound-sculpture",
+  "version": "1.0.0",
+  "description": "3D Sound Sculpture - Envelope Visualization Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "keywords": ["electron", "audio", "3d", "visualization", "envelope", "three.js"],
+  "author": "3D Sound Sculpture",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "tone": "^14.7.77"
+  },
+  "build": {
+    "appId": "com.3dsoundsculpture.app",
+    "productName": "3D Sound Sculpture",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*"
+    ]
+  }
+}
